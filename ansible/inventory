@@ -1,0 +1,25 @@
+[inetRouter]
+inetRouter ansible_host=192.168.57.11
+
+[centralRouter]
+centralRouter ansible_host=192.168.57.21
+
+[office1Router]
+office1Router ansible_host=192.168.57.31
+
+[office2Router]
+office2Router ansible_host=192.168.57.41
+
+[centralServer]
+centralServer ansible_host=192.168.57.22
+
+[office1Server]
+office1Server ansible_host=192.168.57.32
+
+[office2Server]
+office2Server ansible_host=192.168.57.42
+
+
+[all:vars]
+ansible_user=vagrant
+#ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
