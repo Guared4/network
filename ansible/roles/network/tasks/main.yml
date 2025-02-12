@@ -1,0 +1,45 @@
+---
+# tasks file for network
+- name: install traceroute
+  apt:
+    name: traceroute
+    state: present
+
+- name: disable default route via eth0
+  copy:
+    src: 00-installer-config.yaml
+    dest: /etc/netplan/00-installer-config.yaml
+  when: ansible_hostname != "inetRouter"
+
+- name: configure routing
+  copy:
+    src: "50-vagrant-{{ ansible_hostname }}.yaml"
+    dest: /etc/netplan/50-vagrant.yaml
+    owner: root
+    group: root
+    mode: 0644
+
+- name: enable IP forwarding
+  sysctl:
+    name: net.ipv4.conf.all.forwarding
+    value: '1'
+    sysctl_set: true
+    state: present
+  when: "'routers' in group_names"
+  tags: forwarding
+
+- name: iptables
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  with_items:
+    - { src: "iptables_rules.ipv4", dest: "/etc/iptables_rules.ipv4", mode: "0644" }
+    - { src: "iptables", dest: "/etc/network/if-pre-up.d/iptables", mode: "0755" }
+  when: ansible_hostname == "inetRouter"
+  tags: iptables
+
+- name: reboot all servers
+  ansible.builtin.reboot:
