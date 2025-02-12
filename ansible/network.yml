@@ -1,0 +1,16 @@
+#- name: Configure logging
+#  hosts: localhost
+#  become: true
+#  tasks:
+#    - name: Add hosts to inventory
+#      add_host:
+#        name: "{{ item }}"
+#        ansible_ssh_host: "{{ hostvars[item].ansible_host }}"
+#        ansible_ssh_user: "{{ hostvars[item].ansible_user }}"
+#      with_items: "{{ groups['all'] }}"
+
+- name: Configure network
+  hosts: all
+  become: true
+  roles:
+    - network
